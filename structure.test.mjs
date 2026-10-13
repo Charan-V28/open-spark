@@ -117,6 +117,7 @@ test("profile, feedback, opportunity rotation, research, credentials, and docume
   for (const extension of [".pdf", ".docx", ".pptx", ".xlsx", ".epub", ".odt"]) assert.ok(importAccept.includes(extension), `${extension} import filter missing`);
   for (const format of ["docx", "pptx", "xlsx", "epub", "odt", "pdf", "rtf"]) assert.ok(app.includes(`"${format}"`), `${format} extraction path missing`);
   assert.match(app, /function updateHomeDate\(\)/);
+  assert.match(app, /\$\$\("\[data-interest\]"\)\.forEach/, "profile initialization must use the multi-element selector for interest checkboxes");
   assert.match(app, /setInterval\(updateHomeDate/);
   assert.match(app, /item\.category!=="internship"\|\|!hsOnly\|\|item\.highSchoolOnly===true/);
   assert.match(css, /data-theme="dark"/);
