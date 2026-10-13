@@ -22,8 +22,12 @@ npm test
 
 - Responsive home screen with low-pressure private missions and path cards.
 - Searchable category filters, beginner toggle, opportunity discovery links, detail panels, and save/status tracking.
-- Four beginner project guides with steps and safety notes.
-- Local-only `.txt` notes preview and sentence-based flashcard/quiz demo. Files are read in the browser and never uploaded.
+- Twenty curated opportunity and source starting points, with high-school-only filtering for internship listings, randomized ordering, and a refresh button. The cards link to providers; these are not live job listings and random ordering does not create new offers.
+- Eight beginner project guides with steps and safety notes, plus a separate independent-research area with eight ethical, beginner-friendly research plans.
+- A certificates and badges directory that distinguishes issuer-awarded learning badges from paid industry exams.
+- Local file extraction for selectable text in PDF, DOCX, PPTX, XLSX, EPUB, ODT, RTF, and common text/code formats, plus a sentence-based flashcard/quiz demo. Files are read in the browser and never uploaded. Scanned PDFs, images/OCR, legacy binary Office files, encrypted files, and malformed documents may not extract.
+- Profile settings for a local display name, a retakeable interests check-in that reorders discovery, dark/light mode, and local data controls. The home date uses the device's current locale and updates on its own.
+- A public feedback link to the contact address supplied by the project owner: `Bcharan.van@gmail.com`.
 - 12 original SAT-aligned Reading and Writing questions and 12 original Math questions across a range of skills, with filtering, explanations, and direct links to official College Board and Khan Academy resources. This is a starter bank, not the large adaptive question library envisioned for a later production release.
 - Local browser save controls and a clear-local-data action.
 - Visible create-account/sign-in switch backed by Supabase Auth's public auth endpoints when configured; email confirmation should be enabled in the Supabase project. The create-account form remains visible while auth is unconfigured and explains what setup is missing.
@@ -54,6 +58,7 @@ The app does not scrape or copy either service. Indeed's documented APIs are par
 - Account creation is enabled for the protected preview and requires email/password, age/notice consent, and email confirmation when Supabase is configured as described above. The Supabase redirect allowlist must include the URL being tested. Do not expose the deployment publicly until the draft policies and privacy review are complete. The local preview identity is not a real account and only appears on localhost or `file://`.
 - Although Supabase accounts can be real when configured, saved opportunities and progress are not synced to a server, account deletion is not implemented, and the browser-only gate is not server-side authorization.
 - The app is not affiliated with College Board. Its SAT practice items are original examples and are not official SAT questions.
+- The source directory and credential links are not automatically refreshed or endorsed. Verify every deadline, price, age/grade rule, and current availability at the issuer before applying.
 - Before real student accounts, document uploads, or school use, complete the legal, privacy, security, content-review, and operational work described in the product plan.
 
 ## Name and deployment
@@ -63,3 +68,9 @@ The product and Vercel project are named **Open Spark**. The connected GitHub re
 ## Vercel
 
 Set this folder (`outputs/launchpad-site`) as the Vercel project root and deploy it as a static site. The included `vercel.json` adds baseline response security headers. The current Vercel deployment is protected by Vercel authentication while account flows are tested. Public student use still requires a server-aware auth/data architecture and legal/privacy review; the static client-side gate is not access control for private backend resources.
+
+## Automated opportunity updates
+
+The current cards are a locally curated source directory. The page can shuffle them, but it does not fetch new openings or remove expired deadlines. A reliable automated feed needs a server-side scheduled job, licensed/official source connectors, a database, review rules, and expiry handling. Google Custom Search JSON API is closed to new customers and Google says it will be discontinued on January 1, 2027; it is not a good new integration to build around. A Google API key alone would return search results, not verified high-school internship records. Do not paste a key into chat or browser code. If a future connector needs a secret, store it in local `.env` for local development and Vercel Environment Variables for deployment; keep it server-only and out of `NEXT_PUBLIC_*` variables and Git.
+
+For high-school-only internships, ingest explicit education-level and grade/age eligibility from each provider, preserve the provider URL and checked date, and exclude records unless the high-school rule is verified. A text classifier can assist staff but must not decide eligibility by itself. The scheduled job should mark a listing expired when its deadline passes, hide records with unknown/stale status from “open now,” and keep historical records for audit. Do not scrape LinkedIn or Indeed; use only their approved partner APIs or licensed feeds. See the product plan for a proposed ingestion schema and Vercel/Supabase architecture.

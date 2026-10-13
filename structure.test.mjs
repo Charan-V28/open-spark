@@ -39,7 +39,7 @@ test("local preview is local-only and Supabase config contains only a public pub
 test("static buttons are connected to navigation, a delegated action, or a form/dialog", () => {
   const buttons = [...html.matchAll(/<button\b([^>]*)>/g)].map(match => match[1]);
   assert.ok(buttons.length > 20, `expected a substantial interface, found ${buttons.length} buttons`);
-  const delegated = /data-(?:view|go|category|save|detail|project|set|subject|auth-action|project-done)|class="[^"]*(?:modal-close|notice-close)[^"]*"/;
+  const delegated = /data-(?:view|go|category|credential|save|detail|project|set|subject|auth-action|project-done)|class="[^"]*(?:modal-close|notice-close)[^"]*"/;
   const code = `${app}\n${auth}`;
   const unhandled = buttons.filter(attrs => {
     if (delegated.test(attrs)) return false;
@@ -89,6 +89,23 @@ test("SAT practice offers a varied, original question set in both sections", () 
   for (const skill of ["Command of Evidence", "Inferences", "Text Structure and Purpose", "Cross-Text Connections", "Rhetorical Synthesis", "Boundaries", "Form, Structure, and Sense", "Advanced Math"]) {
     assert.ok(app.includes(`skill:"${skill}"`), `${skill} practice missing`);
   }
+});
+
+test("profile, feedback, opportunity rotation, research, credentials, and document import are wired", () => {
+  for (const id of ["home-date", "welcome-name", "opportunity-nav-count", "hs-only-toggle", "shuffle-opportunities", "shuffle-projects", "settings-name", "theme-toggle", "retake-interests", "interest-modal", "save-interests", "view-research", "research-grid", "view-credentials", "credential-grid", "credential-search", "global-contact"]) {
+    assert.ok(html.includes(`id="${id}"`) || html.includes(id), `${id} missing from the page`);
+  }
+  assert.ok(html.includes("mailto:Bcharan.van@gmail.com?subject=Open%20Spark%20feedback"));
+  const importAccept = html.match(/id="file-input"[^>]*accept="([^"]+)"/)?.[1] || "";
+  for (const extension of [".pdf", ".docx", ".pptx", ".xlsx", ".epub", ".odt"]) assert.ok(importAccept.includes(extension), `${extension} import filter missing`);
+  for (const format of ["docx", "pptx", "xlsx", "epub", "odt", "pdf", "rtf"]) assert.ok(app.includes(`"${format}"`), `${format} extraction path missing`);
+  assert.match(app, /function updateHomeDate\(\)/);
+  assert.match(app, /setInterval\(updateHomeDate/);
+  assert.match(app, /item\.category!=="internship"\|\|!hsOnly\|\|item\.highSchoolOnly===true/);
+  assert.match(css, /data-theme="dark"/);
+  assert.match(app, /function renderResearch\(\)/);
+  assert.match(app, /function renderCredentials\(\)/);
+  assert.match(app, /function extractStudyFile\(file\)/);
 });
 
 test("Vercel and local server security headers allow only the auth provider connection needed", async () => {
