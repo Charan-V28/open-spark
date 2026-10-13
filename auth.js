@@ -111,6 +111,7 @@
   function providerMessage(error) {
     const text = error.message || "";
     if (/invalid login credentials/i.test(text)) return "That email and password didn't match. Check them and try again.";
+    if (/email not confirmed|email_not_confirmed/i.test(text)) return "Please confirm your email from the message we sent, then sign in again.";
     if (/already registered|user already exists/i.test(text)) return "An account may already use that email. Try signing in instead.";
     if (/password should be at least|weak password/i.test(text)) return "Choose a stronger password with at least 8 characters.";
     if (/rate limit|too many requests/i.test(text)) return "Too many attempts just now. Please wait a little and try again.";
@@ -161,15 +162,15 @@
     submit.textContent = mode === "signup" ? "Creating your account…" : "Signing you in…";
     try {
       if (mode === "signup") {
-        const result = await authRequest("/signup", { email, password: secret });
-        if (!result.access_token) {
-          setMode("signin");
-          document.getElementById("auth-email").value = email;
-          alert("Check your inbox for a confirmation link. After confirming your email, come back here to sign in.", "success");
-          return;
-        }
-        saveSession(result);
-        showApp({ id: result.user.id, email: result.user.email, token: result.access_token });
+        const redirectTo = `${location.origin}${location.pathname}`;
+        const result = await authRequest(`/signup?redirect_to=${encodeURIComponent(redirectTo)}`, { email, password: secret });
+        setMode("signin");
+        document.getElementById("auth-email").value = email;
+        password.value = "";
+        consent.checked = false;
+        alert(result.access_token
+          ? "Your account is created. Sign in with your new email and password to continue."
+          : "Check your inbox to confirm your email, then sign in with your new account.", "success");
       } else {
         const result = await authRequest("/token?grant_type=password", { email, password: secret });
         saveSession(result);

@@ -8,6 +8,12 @@ const auth = await readFile(new URL("./auth.js", import.meta.url), "utf8");
 const authConfig = await readFile(new URL("./auth-config.js", import.meta.url), "utf8");
 const css = await readFile(new URL("./styles.css", import.meta.url), "utf8");
 
+test("Open Spark is the visible product identity", () => {
+  assert.match(html, /<title>Open Spark — your next move starts here<\/title>/);
+  assert.match(html, /YOUR OPEN SPARK/);
+  assert.doesNotMatch(html, /Launchpad/);
+});
+
 test("protected app starts hidden and authentication loads app code after sign-in", () => {
   assert.match(html, /id="app-shell" hidden/);
   assert.match(html, /id="mobile-nav"[^>]*hidden/);
@@ -16,19 +22,18 @@ test("protected app starts hidden and authentication loads app code after sign-i
   assert.match(auth, /if \(!configured\)[\s\S]*submit\.disabled = true/);
 });
 
-test("local preview is limited to local browser origins and the configuration contains no credentials", () => {
+test("local preview is local-only and Supabase config contains only a public publishable key", () => {
   assert.match(auth, /location\.protocol === "file:" \|\| \["localhost", "127\.0\.0\.1"\]\.includes\(location\.hostname\)/);
   assert.match(auth, /config\.allowLocalPreview && localHost/);
-  assert.match(authConfig, /supabaseUrl: ""/);
-  assert.match(authConfig, /supabasePublishableKey: ""/);
-  assert.match(authConfig, /enableAccountCreation: false/);
+  assert.match(authConfig, /supabaseUrl: "https:\/\/mncgzswnxxutrwychavf\.supabase\.co"/);
+  assert.match(authConfig, /supabasePublishableKey: "sb_publishable_/);
+  assert.match(authConfig, /enableAccountCreation: true/);
+  assert.doesNotMatch(authConfig, /sb_secret_|service_role/i);
+  assert.match(authConfig, /allowLocalPreview: true/);
   assert.match(html, /id="auth-mode-toggle" type="button">Create an account/);
   assert.match(auth, /toggle\.addEventListener\("click", \(\) => setMode\(mode === "signin" \? "signup" : "signin"\)\)/);
   assert.match(auth, /Account creation is not connected yet/);
   assert.doesNotMatch(auth, /if \(next === "signup" && !signupEnabled\) return/);
-  assert.match(authConfig, /supabaseUrl: ""/);
-  assert.match(authConfig, /supabasePublishableKey: ""/);
-  assert.doesNotMatch(authConfig, /supabase(?:Url|PublishableKey):\s*"https?:/i);
 });
 
 test("static buttons are connected to navigation, a delegated action, or a form/dialog", () => {
@@ -58,12 +63,32 @@ test("required user inputs, privacy links, and source discovery are present", ()
   assert.match(html, /We don't copy or scrape their posts/);
 });
 
+test("account creation returns to sign-in and sends email confirmation to the current site", () => {
+  assert.match(auth, /const redirectTo = `\$\{location\.origin\}\$\{location\.pathname\}`/);
+  assert.match(auth, /authRequest\(`\/signup\?redirect_to=\$\{encodeURIComponent\(redirectTo\)\}`/);
+  assert.match(auth, /setMode\("signin"\);[\s\S]*?Your account is created\. Sign in with your new email and password/);
+  assert.match(auth, /Check your inbox to confirm your email, then sign in/);
+  assert.match(auth, /Please confirm your email from the message we sent, then sign in again/);
+});
+
 test("opportunity filters cover all target categories and the SAT section states its independent status", () => {
   for (const category of ["research", "volunteering", "internship", "competition", "club", "project"]) {
     assert.ok(app.includes(`category:"${category}"`), `${category} category missing`);
   }
   assert.match(html, /Independent SAT-aligned practice · not official College Board content/);
   assert.match(html, /satsuite\.collegeboard\.org\/practice/);
+});
+
+test("SAT practice offers a varied, original question set in both sections", () => {
+  const rwIds = [...app.matchAll(/id:"(rw\d+)"/g)].map(match => match[1]);
+  const mathIds = [...app.matchAll(/id:"(m\d+)"/g)].map(match => match[1]);
+  assert.equal(rwIds.length, 12, "expected 12 original Reading and Writing questions");
+  assert.equal(mathIds.length, 12, "expected 12 original Math questions");
+  assert.equal(new Set(rwIds).size, rwIds.length, "Reading and Writing question IDs must be unique");
+  assert.equal(new Set(mathIds).size, mathIds.length, "Math question IDs must be unique");
+  for (const skill of ["Command of Evidence", "Inferences", "Text Structure and Purpose", "Cross-Text Connections", "Rhetorical Synthesis", "Boundaries", "Form, Structure, and Sense", "Advanced Math"]) {
+    assert.ok(app.includes(`skill:"${skill}"`), `${skill} practice missing`);
+  }
 });
 
 test("Vercel and local server security headers allow only the auth provider connection needed", async () => {
