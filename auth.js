@@ -47,11 +47,14 @@
     avatar.textContent = (window.launchpadUserEmail.slice(0, 1) || "A").toUpperCase();
     if (!appLoaded) {
       appLoaded = true;
-      const script = document.createElement("script");
-      script.src = new URL("app.js", location.href).href;
-      script.onload = () => { loading.hidden = true; shell.hidden = false; mobileNav.hidden = false; window.dispatchEvent(new CustomEvent("launchpad:ready", { detail: user })); };
-      script.onerror = () => { showScreen(); alert("The app couldn't load. Refresh the page and try again.", "error"); };
-      document.body.append(script);
+      import(new URL("sat-bank.mjs", location.href).href).then(({ buildSatBank }) => {
+        window.LAUNCHPAD_SAT_QUESTIONS = buildSatBank();
+        const script = document.createElement("script");
+        script.src = new URL("app.js", location.href).href;
+        script.onload = () => { loading.hidden = true; shell.hidden = false; mobileNav.hidden = false; window.dispatchEvent(new CustomEvent("launchpad:ready", { detail: user })); };
+        script.onerror = () => { showScreen(); alert("The app couldn't load. Refresh the page and try again.", "error"); };
+        document.body.append(script);
+      }).catch(() => { appLoaded = false; showScreen(); alert("The practice question bank couldn't load. Refresh the page and try again.", "error"); });
     } else { loading.hidden = true; shell.hidden = false; mobileNav.hidden = false; }
   }
 

@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
+import { buildSatBank } from "./sat-bank.mjs";
 
 const html = await readFile(new URL("./index.html", import.meta.url), "utf8");
 const app = await readFile(new URL("./app.js", import.meta.url), "utf8");
@@ -97,15 +98,38 @@ test("opportunity directory includes paid and free paths with cost and aid detai
 });
 
 test("SAT practice offers a varied, original question set in both sections", () => {
-  const rwIds = [...app.matchAll(/id:"(rw\d+)"/g)].map(match => match[1]);
-  const mathIds = [...app.matchAll(/id:"(m\d+)"/g)].map(match => match[1]);
-  assert.equal(rwIds.length, 12, "expected 12 original Reading and Writing questions");
-  assert.equal(mathIds.length, 12, "expected 12 original Math questions");
+  const bank = buildSatBank();
+  const rwIds = bank.rw.map(question => question.id);
+  const mathIds = bank.math.map(question => question.id);
+  assert.equal(rwIds.length, 500, "expected 500 original Reading and Writing questions");
+  assert.equal(mathIds.length, 500, "expected 500 original Math questions");
   assert.equal(new Set(rwIds).size, rwIds.length, "Reading and Writing question IDs must be unique");
   assert.equal(new Set(mathIds).size, mathIds.length, "Math question IDs must be unique");
-  for (const skill of ["Command of Evidence", "Inferences", "Text Structure and Purpose", "Cross-Text Connections", "Rhetorical Synthesis", "Boundaries", "Form, Structure, and Sense", "Advanced Math"]) {
-    assert.ok(app.includes(`skill:"${skill}"`), `${skill} practice missing`);
+  for (const section of [bank.rw, bank.math]) {
+    assert.equal(new Set(section.map(question => `${question.passage}|${question.prompt}`)).size, section.length, "question content must vary");
+    for (const question of section) {
+      assert.equal(question.options.length, 4, `${question.id} must have four choices`);
+      assert.equal(new Set(question.options).size, 4, `${question.id} choices must be distinct`);
+      assert.ok(question.answer >= 0 && question.answer < question.options.length, `${question.id} answer index must be valid`);
+      assert.ok(question.explanation.length > 15, `${question.id} needs an explanation`);
+    }
   }
+  for (const skill of ["Words in Context", "Central Ideas and Details", "Command of Evidence", "Inferences", "Text Structure and Purpose", "Cross-Text Connections", "Transitions", "Rhetorical Synthesis", "Boundaries", "Form, Structure, and Sense"]) {
+    assert.ok(bank.rw.some(question => question.skill === skill), `${skill} practice missing`);
+  }
+  for (const skill of ["Algebra", "Advanced Math", "Problem-Solving and Data Analysis", "Geometry and Trigonometry"]) {
+    assert.ok(bank.math.some(question => question.skill === skill), `${skill} practice missing`);
+  }
+  assert.match(auth, /import\(new URL\("sat-bank\.mjs", location\.href\)\.href\)/, "bank must load before app initialization");
+  assert.match(app, /window\.LAUNCHPAD_SAT_QUESTIONS/);
+});
+
+test("opportunity detail, quick quiz, and SAT scoring controls have observable outcomes", () => {
+  assert.match(app, /function showDetail\(id\)[\s\S]*\$\("#detail-modal"\)\.showModal\(\)/);
+  assert.match(app, /if\(detail\)\{showDetail\(detail\.dataset\.detail\);return\}/);
+  assert.match(app, /if\(e\.target\.closest\("#check-study-answer"\)\)[\s\S]*feedback\.textContent=.*That's it/);
+  assert.match(app, /if\(e\.target\.closest\("#sat-action"\)\)[\s\S]*state\.satChecked=true/);
+  assert.match(app, /state\.satSelection===q\.answer\?`Nice work\./);
 });
 
 test("profile, feedback, opportunity rotation, research, credentials, and document import are wired", async () => {
