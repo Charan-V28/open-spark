@@ -8,6 +8,7 @@ const app = await readFile(new URL("./app.js", import.meta.url), "utf8");
 const auth = await readFile(new URL("./auth.js", import.meta.url), "utf8");
 const authConfig = await readFile(new URL("./auth-config.js", import.meta.url), "utf8");
 const css = await readFile(new URL("./styles.css", import.meta.url), "utf8");
+const tasks = await readFile(new URL("./task-planner.js", import.meta.url), "utf8");
 
 test("Open Spark is the visible product identity", () => {
   assert.match(html, /<title>Open Spark — your next move starts here<\/title>/);
@@ -21,6 +22,7 @@ test("protected app starts hidden and authentication loads app code after sign-i
   assert.match(html, /id="mobile-nav"[^>]*hidden/);
   assert.doesNotMatch(html, /<script[^>]+src="app\.js"/);
   assert.match(auth, /if \(!appLoaded\)[\s\S]*script\.src = new URL\("app\.js"/);
+  assert.match(auth, /launchpad:local-preview"\) === "true"[\s\S]*return \{ id: "local-preview"/);
   assert.match(auth, /currentSession\(\)\.then\(user =>/);
   assert.doesNotMatch(auth, /^\s*showScreen\(\);\s*currentSession\(\)/m, "auth screen must stay hidden while a returning session is checked");
   assert.match(auth, /if \(!configured\)[\s\S]*submit\.disabled = true/);
@@ -163,6 +165,26 @@ test("profile, feedback, opportunity rotation, research, credentials, and docume
   }
 });
 
+test("Tasks & Focus is an authenticated, account-local planner with working controls", () => {
+  assert.match(html, /data-view="tasks"[^>]*>.*?Tasks & focus/);
+  assert.match(html, /id="view-tasks"[\s\S]*id="tasks-app"/);
+  assert.match(app, /"tasks","sat"/);
+  assert.match(app, /e\.target\.closest\("\.nav-item\[data-view\], \.mobile-nav \[data-view\]"\)/, "only navigation controls should switch views; app-shell data-view is state");
+  assert.match(app, /tasksScript\.src=new URL\("task-planner\.js(?:\?v=[^"]*)?"/);
+  for (const tab of ["All Tasks", "My Day", "Work", "Personal", "Starred"]) assert.ok(tasks.includes(`"${tab}"`), `${tab} task tab missing`);
+  for (const syntax of [/\\btoday\\b/i, /\\btomorrow\\b/i, /next\\s\+monday/i, /in\\s\+\(\\d\+\)\\s\+days/i, /!p\(\[1-3\]\)/, /#\(/]) assert.ok(syntax.test(tasks), `task input parser missing ${syntax}`);
+  for (const action of ["complete", "star", "focus", "edit", "delete", "subtasks", "gmail-add"]) assert.ok(tasks.includes(`action===\"${action}\"`) || tasks.includes(`data-action=\"${action}\"`), `${action} action missing`);
+  assert.match(tasks, /task-analytics-panel/);
+  assert.match(tasks, /localStorage\.setItem\(storageKey/);
+  assert.match(tasks, /openspark:tasks:\$\{userId\}/);
+  assert.match(tasks, /GMAIL DEMO · SAMPLE INBOX ITEM/);
+  assert.match(tasks, /sample Drive file/);
+  assert.match(tasks, /task-edit-dialog/);
+  assert.match(tasks, /data-dialog-save/);
+  assert.doesNotMatch(tasks, /\b(?:prompt|confirm)\s*\(/, "task editing and deletion should use the accessible in-app dialog");
+  assert.match(css, /prefers-reduced-motion:reduce/);
+});
+
 test("Vercel and local server security headers allow only the auth provider connection needed", async () => {
   const vercel = JSON.parse(await readFile(new URL("./vercel.json", import.meta.url), "utf8"));
   assert.equal(vercel.framework, null, "static app must not use Vercel's auto-detected Node preset");
@@ -171,8 +193,21 @@ test("Vercel and local server security headers allow only the auth provider conn
   const headers = vercel.headers[0].headers;
   assert.ok(headers.some(header => header.key === "X-Content-Type-Options" && header.value === "nosniff"));
   assert.ok(headers.some(header => header.key === "Cache-Control" && header.value === "no-cache, must-revalidate"), "static app changes should be revalidated after deployment");
+  for (const key of ["X-Frame-Options", "Referrer-Policy", "Permissions-Policy", "Cross-Origin-Opener-Policy", "Cross-Origin-Resource-Policy", "Strict-Transport-Security"]) {
+    assert.ok(headers.some(header => header.key === key), `Vercel ${key} header missing`);
+  }
   const csp = headers.find(header => header.key === "Content-Security-Policy")?.value || "";
   assert.match(csp, /connect-src 'self' https:\/\/\*\.supabase\.co/);
+  assert.match(csp, /script-src 'self'/);
+  assert.match(csp, /frame-src 'none'/);
+  assert.match(csp, /form-action 'self'/);
   assert.match(csp, /frame-ancestors 'none'/);
+  const server = await readFile(new URL("./server.mjs", import.meta.url), "utf8");
+  for (const header of ["X-Content-Type-Options", "Cross-Origin-Opener-Policy", "Cross-Origin-Resource-Policy", "Content-Security-Policy"]) {
+    assert.ok(server.includes(`"${header}"`), `local server ${header} header missing`);
+  }
+  const security = await readFile(new URL("./SECURITY.md", import.meta.url), "utf8");
+  assert.match(security, /account gate does not authorize static files/);
+  assert.match(security, /sessionStorage/);
   assert.match(css, /prefers-reduced-motion:reduce/);
 });

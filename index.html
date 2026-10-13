@@ -48,6 +48,7 @@
           <button class="nav-item" data-view="research"><span class="nav-icon">⌕</span> Independent research</button>
           <button class="nav-item" data-view="credentials"><span class="nav-icon">✧</span> Certificates & badges</button>
           <button class="nav-item" data-view="study"><span class="nav-icon">▤</span> Study lab</button>
+          <button class="nav-item" data-view="tasks"><span class="nav-icon">✓</span> Tasks & focus</button>
           <button class="nav-item" data-view="sat"><span class="nav-icon">✦</span> SAT practice</button>
         </nav>
         <div class="sidebar-bottom">
@@ -133,6 +134,10 @@
             <section class="study-results hidden" id="study-results" aria-live="polite"><div class="results-heading"><div><div class="eyebrow">YOUR STUDY SET</div><h2 id="study-set-title">A few ideas to review</h2></div><button class="text-link" id="clear-study">Clear this set <span>×</span></button></div><div class="study-set-tabs"><button class="set-tab active" data-set="cards">Flashcards <span id="flashcard-total">0</span></button><button class="set-tab" data-set="quiz">Quick quiz <span id="quiz-total">0</span></button></div><div id="flashcard-area"></div><div id="quiz-area" class="hidden"></div></section>
           </section>
 
+          <section class="view" id="view-tasks" aria-labelledby="tasks-title">
+            <div id="tasks-app" class="tasks-app" aria-live="off"></div>
+          </section>
+
           <section class="view" id="view-sat" aria-labelledby="sat-title">
             <div class="page-intro"><div class="eyebrow">ONE SKILL AT A TIME</div><h1 id="sat-title">Practice, <span class="name-highlight">not pressure.</span></h1><p class="lead">A short set of original questions to help you build a habit of working through problems.</p></div>
             <div class="sat-notice"><span>✦</span><div><strong>Independent SAT-aligned practice · not official College Board content.</strong><p>These original examples aren't copied from official tests. For official practice, use the resources below.</p></div></div>
@@ -144,7 +149,7 @@
       </div>
     </div>
 
-    <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation" hidden><button class="active" data-view="home"><span>⌂</span>Home</button><button data-view="opportunities"><span>✳</span>Explore</button><button data-view="projects"><span>↗</span>Make</button><button data-view="research"><span>⌕</span>Research</button><button data-view="credentials"><span>✧</span>Credentials</button><button data-view="study"><span>▤</span>Study</button><button data-view="sat"><span>✦</span>SAT</button></nav>
+    <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation" hidden><button class="active" data-view="home"><span>⌂</span>Home</button><button data-view="opportunities"><span>✳</span>Explore</button><button data-view="projects"><span>↗</span>Make</button><button data-view="research"><span>⌕</span>Research</button><button data-view="credentials"><span>✧</span>Credentials</button><button data-view="study"><span>▤</span>Study</button><button data-view="tasks"><span>✓</span>Tasks</button><button data-view="sat"><span>✦</span>SAT</button></nav>
 
     <dialog class="modal" id="detail-modal"><form method="dialog"><button class="modal-close" aria-label="Close">×</button></form><div id="detail-content"></div></dialog>
     <dialog class="modal settings-modal" id="privacy-modal"><form method="dialog"><button class="modal-close" aria-label="Close">×</button></form><div class="eyebrow">YOUR ACCOUNT & PREFERENCES</div><h2>Make this space yours.</h2><p>Signed in as <strong id="account-email">your account</strong>.</p><label class="settings-field">Display name<input id="settings-name" type="text" maxlength="40" placeholder="What should we call you?" autocomplete="nickname" /></label><button class="button button-dark" id="save-display-name" type="button">Save name</button><div class="settings-row"><div><strong>Dark mode</strong><small>Choose a softer look for this device.</small></div><label class="switch"><input id="theme-toggle" type="checkbox" /><span>On</span></label></div><div class="settings-row"><div><strong>Your interests</strong><small id="interest-summary">Pick a few things you might like.</small></div><button class="button button-outline" id="retake-interests" type="button">Retake quiz</button></div><p class="privacy-copy">Saved opportunities and preferences are currently stored in this browser and scoped to your account. They are not synced across devices yet. Study files are processed locally when their format is supported. If this is a shared device, someone with access to this browser may see saved items.</p><div class="account-actions"><button class="button button-outline" id="clear-local-data">Clear local data</button><button class="button button-outline" id="sign-out" data-auth-action="signout">Sign out</button></div></dialog>

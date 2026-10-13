@@ -50,7 +50,7 @@
       import(new URL("sat-bank.mjs", location.href).href).then(({ buildSatBank }) => {
         window.LAUNCHPAD_SAT_QUESTIONS = buildSatBank();
         const script = document.createElement("script");
-        script.src = new URL("app.js", location.href).href;
+        script.src = new URL("app.js", location.href).href + "?v=20261013.1";
         script.onload = () => { loading.hidden = true; shell.hidden = false; mobileNav.hidden = false; window.dispatchEvent(new CustomEvent("launchpad:ready", { detail: user })); };
         script.onerror = () => { showScreen(); alert("The app couldn't load. Refresh the page and try again.", "error"); };
         document.body.append(script);
@@ -97,6 +97,9 @@
   }
 
   async function currentSession() {
+    if (config.allowLocalPreview === true && localHost && sessionStorage.getItem("launchpad:local-preview") === "true") {
+      return { id: "local-preview", email: "Local preview" };
+    }
     if (!configured) return null;
     let session;
     try { session = JSON.parse(sessionStorage.getItem("launchpad:auth-session") || "null"); } catch { session = null; }
