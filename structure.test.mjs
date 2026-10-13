@@ -42,7 +42,7 @@ test("local preview is local-only and Supabase config contains only a public pub
 test("static buttons are connected to navigation, a delegated action, or a form/dialog", () => {
   const buttons = [...html.matchAll(/<button\b([^>]*)>/g)].map(match => match[1]);
   assert.ok(buttons.length > 20, `expected a substantial interface, found ${buttons.length} buttons`);
-  const delegated = /data-(?:view|go|category|credential|save|detail|project|set|subject|auth-action|project-done)|class="[^"]*(?:modal-close|notice-close)[^"]*"/;
+  const delegated = /data-(?:view|go|category|cost|credential|save|detail|project|set|subject|auth-action|project-done)|class="[^"]*(?:modal-close|notice-close)[^"]*"/;
   const code = `${app}\n${auth}`;
   const unhandled = buttons.filter(attrs => {
     if (delegated.test(attrs)) return false;
@@ -82,6 +82,20 @@ test("opportunity filters cover all target categories and the SAT section states
   assert.match(html, /satsuite\.collegeboard\.org\/practice/);
 });
 
+test("opportunity directory includes paid and free paths with cost and aid details", () => {
+  assert.match(html, /data-cost="free"/);
+  assert.match(html, /data-cost="paid"/);
+  assert.match(html, /data-cost="varies"/);
+  assert.match(app, /function costType\(item\)/);
+  assert.match(app, /matchesCost=state\.cost==="all"\|\|costType\(item\)===state\.cost/);
+  assert.match(app, /Financial aid \/ extra costs/);
+  for (const id of ["questbridge-cps", "rsi", "simr", "yygs", "tass", "ssp", "mit-primes", "promys", "ross", "bank-america-leaders", "key-club", "ysa", "regeneron-sts"]) {
+    assert.ok(app.includes(`id:"${id}"`), `${id} source listing missing`);
+  }
+  const ids = [...app.matchAll(/\{id:"([a-z0-9-]+)",title:/g)].map(match => match[1]);
+  assert.equal(new Set(ids).size, ids.length, "listing IDs must be unique for save and detail actions");
+});
+
 test("SAT practice offers a varied, original question set in both sections", () => {
   const rwIds = [...app.matchAll(/id:"(rw\d+)"/g)].map(match => match[1]);
   const mathIds = [...app.matchAll(/id:"(m\d+)"/g)].map(match => match[1]);
@@ -114,6 +128,7 @@ test("profile, feedback, opportunity rotation, research, credentials, and docume
   assert.match(app, /function buildStudyItems\(raw\)/);
   assert.match(app, /history\.pushState\(\{view\}/);
   assert.match(app, /const requestedView=location\.hash\.slice\(1\)/);
+  assert.match(app, /window\.addEventListener\("launchpad:ready"[\s\S]*setView\(view,\{navigate:false,scroll:false\}\)/);
   assert.match(css, /auth-arrive/);
   assert.match(css, /sidebar \.nav-item:hover/);
   assert.match(css, /prefers-reduced-motion:reduce/);
