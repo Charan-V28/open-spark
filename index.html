@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f7f7f2" />
+    <meta name="description" content="Find a next step, make something, and study your way." />
+    <title>Launchpad — your next move starts here</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="auth-config.js" defer></script>
+    <script src="auth.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <section class="auth-screen" id="auth-screen" aria-labelledby="auth-title" hidden>
+      <div class="auth-decoration auth-decoration-one" aria-hidden="true">✳</div><div class="auth-decoration auth-decoration-two" aria-hidden="true">✦</div>
+      <a class="auth-brand" href="#auth"><span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span> launchpad<span class="brand-dot">.</span></a>
+      <div class="auth-card">
+        <div class="auth-kicker"><span>✦</span> A LITTLE SPACE TO GROW</div>
+        <h1 id="auth-title">Your next move<br />starts <span class="name-highlight">here.</span></h1>
+        <p class="auth-lead" id="auth-lead">Sign in to pick up where you left off.</p>
+        <div class="auth-alert" id="auth-alert" role="status" aria-live="polite" hidden></div>
+        <form id="auth-form" novalidate>
+          <label class="auth-field" for="auth-email">Email address<input id="auth-email" name="email" type="email" inputmode="email" autocomplete="email" placeholder="you@example.com" required /></label>
+          <label class="auth-field" for="auth-password">Password<input id="auth-password" name="password" type="password" autocomplete="current-password" minlength="8" placeholder="At least 8 characters" required /></label>
+          <button class="auth-recover" id="auth-recover" type="button">Forgot password?</button>
+          <label class="auth-consent" id="auth-consent-row" hidden><input id="auth-consent" type="checkbox" /><span>I’m at least 13 and have read the <a href="terms.html" target="_blank" rel="noopener noreferrer">Terms</a> and <a href="privacy.html" target="_blank" rel="noopener noreferrer">Privacy Notice</a>. If I’m under 18, I’ll involve a parent or guardian.</span></label>
+          <button class="button button-dark auth-submit" id="auth-submit" type="submit">Sign in <span>→</span></button>
+        </form>
+        <div class="auth-switch" hidden><span id="auth-switch-copy">New around here?</span> <button id="auth-mode-toggle" type="button" hidden>Create an account</button></div>
+        <button class="local-preview" id="local-preview" type="button" hidden>Preview locally without an account <span>↗</span></button>
+        <div class="auth-footnote"><span>♧</span> Your progress is private to your account. Some demo features are still stored in this browser.</div>
+      </div>
+      <div class="auth-bottom">Find a next step. Make something. Study your way.</div>
+    </section>
+    <div class="app-shell" id="app-shell" hidden>
+      <aside class="sidebar" aria-label="Main navigation">
+        <a class="brand" href="#home" aria-label="Launchpad home">
+          <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>
+          <span>launchpad<span class="brand-dot">.</span></span>
+        </a>
+        <div class="nav-label">YOUR SPACE</div>
+        <nav class="primary-nav">
+          <button class="nav-item active" data-view="home"><span class="nav-icon">⌂</span> Home</button>
+          <button class="nav-item" data-view="opportunities"><span class="nav-icon">✳</span> Find opportunities <span class="nav-count">12</span></button>
+          <button class="nav-item" data-view="projects"><span class="nav-icon">↗</span> Project starters</button>
+          <button class="nav-item" data-view="study"><span class="nav-icon">▤</span> Study lab</button>
+          <button class="nav-item" data-view="sat"><span class="nav-icon">✦</span> SAT practice</button>
+        </nav>
+        <div class="sidebar-bottom">
+          <div class="side-note"><span class="sparkle">✦</span><div><strong>Small steps count.</strong><p>You don't need a perfect plan to begin.</p></div></div>
+          <button class="privacy-button" id="privacy-button"><span aria-hidden="true">♧</span> Your privacy</button>
+          <div class="sidebar-foot">A little progress is still progress.</div>
+        </div>
+      </aside>
+
+      <div class="main-column">
+        <header class="topbar">
+          <div class="mobile-brand"><span class="brand-mark small" aria-hidden="true"><span></span><span></span><span></span></span> launchpad<span class="brand-dot">.</span></div>
+          <div class="breadcrumbs"><span id="crumb-parent">Your space</span><span class="crumb-slash">/</span><strong id="crumb-current">Home</strong></div>
+          <div class="topbar-right"><span class="today-chip"><span class="status-dot"></span> Your own pace</span><button class="avatar" id="avatar-button" aria-label="Open account and privacy settings">A</button></div>
+        </header>
+
+        <main id="main" tabindex="-1">
+          <section class="view active" id="view-home" aria-labelledby="welcome-title">
+            <div class="welcome-row">
+              <div><div class="eyebrow">TUESDAY, OCTOBER 13 <span class="eyebrow-line"></span> A FRESH START</div><h1 id="welcome-title">Hey there, <span class="name-highlight">future you.</span></h1><p class="lead">You don't have to have it all figured out. Let's find one thing that feels interesting.</p></div>
+              <div class="orbit-art" aria-hidden="true"><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="orbit-core">✦</div><div class="orbit-planet">↗</div><div class="orbit-star">✳</div></div>
+            </div>
+
+            <div class="mission-card">
+              <div class="mission-icon">✦</div><div class="mission-copy"><div class="mission-topline">A TINY MISSION <span class="mission-time">5 MIN</span></div><h2>Pick one thing that sparks curiosity.</h2><p>Browse a few ideas. No applications, no pressure—just see what catches your eye.</p></div>
+              <button class="button button-dark" data-go="opportunities">Let's explore <span aria-hidden="true">↗</span></button>
+              <button class="mission-skip" id="skip-mission" aria-label="Skip this mission">×</button>
+              <div class="mission-scribble" aria-hidden="true">one little step <span>↗</span></div>
+            </div>
+
+            <div class="section-heading"><div><div class="eyebrow">YOUR LAUNCHPAD</div><h2>Where do you want to go?</h2></div><span class="heading-aside">Pick a lane. Switch anytime.</span></div>
+            <div class="path-grid">
+              <button class="path-card path-lilac" data-go="opportunities"><span class="path-top"><span class="path-icon">✳</span><span class="path-arrow">↗</span></span><span class="path-title">Find your thing</span><span class="path-desc">Clubs, volunteering, research & more</span><span class="path-footer"><span class="mini-dots"><i></i><i></i><i></i></span><span>Explore opportunities</span></span><span class="card-decoration flower" aria-hidden="true">✿</span></button>
+              <button class="path-card path-peach" data-go="projects"><span class="path-top"><span class="path-icon">⌁</span><span class="path-arrow">↗</span></span><span class="path-title">Make something</span><span class="path-desc">Small projects. Real skills. Your rules.</span><span class="path-footer"><span class="mini-dots"><i></i><i></i><i></i></span><span>Start from zero</span></span><span class="card-decoration peach-sun" aria-hidden="true">✺</span></button>
+              <button class="path-card path-mint" data-go="study"><span class="path-top"><span class="path-icon">▤</span><span class="path-arrow">↗</span></span><span class="path-title">Study your way</span><span class="path-desc">Turn your notes into a study session</span><span class="path-footer"><span class="mini-dots"><i></i><i></i><i></i></span><span>Open study lab</span></span><span class="card-decoration mint-doodle" aria-hidden="true">✧</span></button>
+              <button class="path-card path-blue" data-go="sat"><span class="path-top"><span class="path-icon">✦</span><span class="path-arrow">↗</span></span><span class="path-title">Warm up for SAT</span><span class="path-desc">Original practice, one skill at a time</span><span class="path-footer"><span class="mini-dots"><i></i><i></i><i></i></span><span>Try a quick set</span></span><span class="card-decoration blue-spark" aria-hidden="true">✦</span></button>
+            </div>
+
+            <div class="home-bottom-grid">
+              <section class="saved-panel panel"><div class="panel-heading"><div><div class="eyebrow">YOUR SHORTLIST</div><h2>Saved for later <span class="saved-count" id="saved-count">0</span></h2></div><button class="text-link" data-go="opportunities">Browse all <span>→</span></button></div><div id="saved-preview" class="saved-preview"><span class="saved-empty-icon">♡</span><div><strong>Your shortlist starts here.</strong><p>Save anything that makes you curious. It's private to this browser.</p></div><button class="inline-link" data-go="opportunities">Find an idea <span>↗</span></button></div></section>
+              <section class="quote-panel"><span class="quote-mark">“</span><p>You can begin before you're ready. You can begin with one small thing.</p><span class="quote-caption">A NOTE TO YOUR FUTURE SELF</span><span class="quote-flower" aria-hidden="true">✿</span></section>
+            </div>
+            <div class="footer-note"><span>✦</span> This is your space. Your path doesn't have to look like anyone else's.</div>
+          </section>
+
+          <section class="view" id="view-opportunities" aria-labelledby="opportunities-title">
+            <div class="page-intro"><div class="eyebrow">FIND YOUR NEXT MOVE</div><h1 id="opportunities-title">Something might <span class="name-highlight">click.</span></h1><p class="lead">Explore ideas, programs, and places to pitch in. Start with what sounds interesting.</p></div>
+            <div class="notice-banner"><span class="notice-icon">ⓘ</span><p><strong>Starter collection, not a live directory.</strong> These cards are examples and discovery links. Details change—always confirm eligibility, cost, and dates with the provider.</p><button class="notice-close" aria-label="Dismiss notice">×</button></div>
+            <div class="live-sources"><div class="live-source-heading"><div><div class="eyebrow">FRESH FROM THE SOURCE</div><h2>Search current listings</h2><p>Open the provider’s site to see what's available today. We don't copy or scrape their posts.</p></div><span class="live-pulse"><i></i> SOURCE LINKS</span></div><div class="live-source-links"><a class="source-card indeed" href="https://www.indeed.com/" target="_blank" rel="noopener noreferrer"><span class="source-logo">in</span><span><strong>Search Indeed</strong><small>Current jobs & internships</small></span><span class="external-arrow">↗</span></a><a class="source-card linkedin" href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer"><span class="source-logo">in</span><span><strong>Explore LinkedIn</strong><small>Jobs, organizations & posts</small></span><span class="external-arrow">↗</span></a><a class="source-card service" href="https://www.volunteermatch.org/" target="_blank" rel="noopener noreferrer"><span class="source-logo">♡</span><span><strong>VolunteerMatch</strong><small>Explore local ways to help</small></span><span class="external-arrow">↗</span></a><a class="source-card service" href="https://www.americorps.gov/serve/fit-finder" target="_blank" rel="noopener noreferrer"><span class="source-logo">✳</span><span><strong>AmeriCorps finder</strong><small>Search service opportunities</small></span><span class="external-arrow">↗</span></a></div><div class="source-caution">Indeed and LinkedIn listings may have age, account, or location requirements. Confirm eligibility and safety directly with each organization.</div></div>
+            <div class="filter-row"><label class="search-box"><span aria-hidden="true">⌕</span><input id="search-input" type="search" placeholder="Search by interest, skill, or idea" autocomplete="off" /></label><div class="filter-chips" id="category-filters" aria-label="Filter by category"><button class="filter-chip selected" data-category="all">Everything</button><button class="filter-chip" data-category="research">Research</button><button class="filter-chip" data-category="volunteering">Volunteering</button><button class="filter-chip" data-category="internship">Internships</button><button class="filter-chip" data-category="competition">Competitions</button><button class="filter-chip" data-category="club">Clubs & activities</button><button class="filter-chip" data-category="project">Projects</button></div></div>
+            <div class="result-meta"><span id="result-count">A few ways in</span><button class="sort-button" id="beginner-toggle" aria-pressed="false"><span class="toggle-dot"></span> Beginner-friendly</button></div>
+            <div class="opportunity-grid" id="opportunity-grid"></div>
+            <div class="directory-footnote">Listings are not endorsements or guarantees. <a href="https://www.nia.nih.gov/nia-summer-internship" target="_blank" rel="noreferrer">NIH research program example</a> · <a href="https://www.volunteermatch.org/" target="_blank" rel="noreferrer">Explore volunteer roles</a>. Always verify details at the source.</div>
+          </section>
+
+          <section class="view" id="view-projects" aria-labelledby="projects-title">
+            <div class="page-intro"><div class="eyebrow">NO EXPERIENCE REQUIRED</div><h1 id="projects-title">Make a little <span class="name-highlight">something.</span></h1><p class="lead">Not every good start comes with an application. Pick a small project and make it yours.</p></div>
+            <div class="project-banner"><span class="banner-spark">✺</span><div><strong>Think of these as starting points, not assignments.</strong><p>Change the topic, make it smaller, team up with a friend, or just try step one.</p></div><span class="banner-doodle" aria-hidden="true">↗</span></div>
+            <div class="project-grid" id="project-grid"></div>
+          </section>
+
+          <section class="view" id="view-study" aria-labelledby="study-title">
+            <div class="page-intro"><div class="eyebrow">YOUR NOTES, YOUR WAY</div><h1 id="study-title">Make studying <span class="name-highlight">click.</span></h1><p class="lead">Bring a text file or paste a few notes. We'll help you turn them into a quick practice set.</p></div>
+            <div class="local-banner"><span class="lock-icon">♧</span><div><strong>Private demo mode: your material stays in this browser.</strong><p>Nothing is uploaded or sent to an AI service. This first build uses a simple local study-set demo.</p></div></div>
+            <div class="study-layout"><section class="study-upload panel"><div class="panel-heading"><div><div class="eyebrow">STEP 01 · BRING YOUR NOTES</div><h2>Start with a little context</h2></div><span class="step-badge">1 / 3</span></div><label class="dropzone" id="dropzone" for="file-input"><span class="upload-icon">↑</span><strong>Drop a .txt file here</strong><span>or <u>choose a file</u> · max 1 MB</span><input id="file-input" type="file" accept=".txt,text/plain" /></label><div class="or-divider"><span></span>OR PASTE A FEW NOTES<span></span></div><label class="sr-only" for="notes-input">Paste study notes</label><textarea id="notes-input" rows="6" placeholder="Paste a paragraph or a few class notes here…"></textarea><div class="study-controls"><span class="character-count" id="character-count">0 / 5,000</span><button class="button button-dark" id="make-cards" disabled>Make a study set <span>→</span></button></div><div id="study-message" class="inline-message" role="status" aria-live="polite"></div></section>
+              <aside class="study-side"><div class="study-side-art" aria-hidden="true"><span class="note-note note-a">idea!</span><span class="note-note note-b">✦</span><div class="flashcard-art"><span>Q</span><i>✧</i><strong>Remember<br />the big idea</strong></div><span class="art-orbit"></span></div><div class="how-card"><span class="how-number">01</span><strong>Small chunks work best.</strong><p>Paste a section at a time so each card stays focused.</p><span class="how-number second">02</span><strong>Check every card.</strong><p>Generated prompts are a starting point. Edit anything that doesn't look right.</p></div></aside></div>
+            <section class="study-results hidden" id="study-results" aria-live="polite"><div class="results-heading"><div><div class="eyebrow">YOUR STUDY SET</div><h2 id="study-set-title">A few ideas to review</h2></div><button class="text-link" id="clear-study">Clear this set <span>×</span></button></div><div class="study-set-tabs"><button class="set-tab active" data-set="cards">Flashcards <span id="flashcard-total">0</span></button><button class="set-tab" data-set="quiz">Quick quiz <span id="quiz-total">0</span></button></div><div id="flashcard-area"></div><div id="quiz-area" class="hidden"></div></section>
+          </section>
+
+          <section class="view" id="view-sat" aria-labelledby="sat-title">
+            <div class="page-intro"><div class="eyebrow">ONE SKILL AT A TIME</div><h1 id="sat-title">Practice, <span class="name-highlight">not pressure.</span></h1><p class="lead">A short set of original questions to help you build a habit of working through problems.</p></div>
+            <div class="sat-notice"><span>✦</span><div><strong>Independent SAT-aligned practice · not official College Board content.</strong><p>These original examples aren't copied from official tests. For official practice, use the resources below.</p></div></div>
+            <div class="sat-layout"><section class="sat-main panel"><div class="sat-selector"><div class="subject-tabs" role="tablist" aria-label="Choose a section"><button class="subject-tab active" data-subject="rw" role="tab" aria-selected="true">Reading & Writing</button><button class="subject-tab" data-subject="math" role="tab" aria-selected="false">Math</button></div><label class="select-label" for="skill-select">SKILL</label><select id="skill-select"></select><div class="question-progress"><span id="question-step">Question 1 of 3</span><div class="progress-track"><span id="progress-fill"></span></div></div></div><div id="question-area"></div></section>
+              <aside class="official-panel"><div class="eyebrow">OFFICIAL PRACTICE</div><h2>Want the real deal?</h2><p>College Board's free tools have official questions and full practice tests.</p><a class="official-link" href="https://satsuite.collegeboard.org/practice/practice-tests/bluebook" target="_blank" rel="noreferrer"><span class="official-icon">▣</span><span><strong>Bluebook practice tests</strong><small>Full-length tests & test preview</small></span><span class="external-arrow">↗</span></a><a class="official-link" href="https://satsuite.collegeboard.org/practice" target="_blank" rel="noreferrer"><span class="official-icon purple">▦</span><span><strong>Student Question Bank</strong><small>Official questions by skill</small></span><span class="external-arrow">↗</span></a><a class="official-link" href="https://www.khanacademy.org/test-prep/sat" target="_blank" rel="noreferrer"><span class="official-icon green">◉</span><span><strong>Khan Academy</strong><small>Free Official SAT Prep</small></span><span class="external-arrow">↗</span></a><div class="source-footnote">Official resources open in a new tab. Launchpad is independent and not affiliated with College Board.</div></aside></div>
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation" hidden><button class="active" data-view="home"><span>⌂</span>Home</button><button data-view="opportunities"><span>✳</span>Explore</button><button data-view="projects"><span>↗</span>Make</button><button data-view="study"><span>▤</span>Study</button><button data-view="sat"><span>✦</span>SAT</button></nav>
+
+    <dialog class="modal" id="detail-modal"><form method="dialog"><button class="modal-close" aria-label="Close">×</button></form><div id="detail-content"></div></dialog>
+    <dialog class="modal small-modal" id="privacy-modal"><form method="dialog"><button class="modal-close" aria-label="Close">×</button></form><div class="eyebrow">YOUR ACCOUNT & PRIVACY</div><h2>Your space stays yours.</h2><p>Signed in as <strong id="account-email">your account</strong>.</p><p>Saved opportunities and progress are currently stored in this browser and scoped to your account. They are not synced across devices yet. Uploaded study text is processed locally and never leaves this browser in this demo.</p><p>If this is a shared device, someone with access to this browser may see saved items. Clear them below when you're done.</p><div class="account-actions"><button class="button button-dark" id="clear-local-data">Clear local data</button><button class="button button-outline" id="sign-out" data-auth-action="signout">Sign out</button></div></dialog>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  </body>
+</html>
