@@ -15,10 +15,13 @@ test("Open Spark is the visible product identity", () => {
 });
 
 test("protected app starts hidden and authentication loads app code after sign-in", () => {
+  assert.match(html, /id="auth-loading"[^>]*role="status"/);
   assert.match(html, /id="app-shell" hidden/);
   assert.match(html, /id="mobile-nav"[^>]*hidden/);
   assert.doesNotMatch(html, /<script[^>]+src="app\.js"/);
   assert.match(auth, /if \(!appLoaded\)[\s\S]*script\.src = new URL\("app\.js"/);
+  assert.match(auth, /currentSession\(\)\.then\(user =>/);
+  assert.doesNotMatch(auth, /^\s*showScreen\(\);\s*currentSession\(\)/m, "auth screen must stay hidden while a returning session is checked");
   assert.match(auth, /if \(!configured\)[\s\S]*submit\.disabled = true/);
 });
 
@@ -91,7 +94,7 @@ test("SAT practice offers a varied, original question set in both sections", () 
   }
 });
 
-test("profile, feedback, opportunity rotation, research, credentials, and document import are wired", () => {
+test("profile, feedback, opportunity rotation, research, credentials, and document import are wired", async () => {
   for (const id of ["home-date", "welcome-name", "opportunity-nav-count", "hs-only-toggle", "shuffle-opportunities", "shuffle-projects", "settings-name", "theme-toggle", "retake-interests", "interest-modal", "save-interests", "view-research", "research-grid", "view-credentials", "credential-grid", "credential-search", "global-contact"]) {
     assert.ok(html.includes(`id="${id}"`) || html.includes(id), `${id} missing from the page`);
   }
@@ -106,6 +109,17 @@ test("profile, feedback, opportunity rotation, research, credentials, and docume
   assert.match(app, /function renderResearch\(\)/);
   assert.match(app, /function renderCredentials\(\)/);
   assert.match(app, /function extractStudyFile\(file\)/);
+  assert.match(app, /function extractPdfTextWithPdfJs\(file\)/);
+  assert.match(app, /pdfjs\.getDocument\(/);
+  assert.match(app, /function buildStudyItems\(raw\)/);
+  assert.match(app, /history\.pushState\(\{view\}/);
+  assert.match(app, /const requestedView=location\.hash\.slice\(1\)/);
+  assert.match(css, /auth-arrive/);
+  assert.match(css, /sidebar \.nav-item:hover/);
+  assert.match(css, /prefers-reduced-motion:reduce/);
+  for (const path of ["./vendor/pdfjs/pdf.min.mjs", "./vendor/pdfjs/pdf.worker.min.mjs", "./vendor/pdfjs/LICENSE"]) {
+    await readFile(new URL(path, import.meta.url));
+  }
 });
 
 test("Vercel and local server security headers allow only the auth provider connection needed", async () => {

@@ -1,6 +1,7 @@
 (() => {
   const config = window.LAUNCHPAD_AUTH_CONFIG || {};
   const screen = document.getElementById("auth-screen");
+  const loading = document.getElementById("auth-loading");
   const shell = document.getElementById("app-shell");
   const mobileNav = document.getElementById("mobile-nav");
   const form = document.getElementById("auth-form");
@@ -26,6 +27,8 @@
   }
 
   function showScreen() {
+    loading.hidden = true;
+    loading.querySelector("span:last-child").textContent = "Opening your space…";
     screen.hidden = false;
     shell.hidden = true;
     mobileNav.hidden = true;
@@ -34,9 +37,11 @@
   function showApp(user) {
     window.launchpadUserId = user.id;
     window.launchpadUserEmail = user.email || "Signed-in account";
+    loading.querySelector("span:last-child").textContent = "Loading your space…";
+    loading.hidden = false;
     screen.hidden = true;
-    shell.hidden = false;
-    mobileNav.hidden = false;
+    shell.hidden = true;
+    mobileNav.hidden = true;
     document.getElementById("account-email").textContent = window.launchpadUserEmail;
     const avatar = document.getElementById("avatar-button");
     avatar.textContent = (window.launchpadUserEmail.slice(0, 1) || "A").toUpperCase();
@@ -44,14 +49,18 @@
       appLoaded = true;
       const script = document.createElement("script");
       script.src = new URL("app.js", location.href).href;
-      script.onload = () => { window.dispatchEvent(new CustomEvent("launchpad:ready", { detail: user })); };
+      script.onload = () => { loading.hidden = true; shell.hidden = false; mobileNav.hidden = false; window.dispatchEvent(new CustomEvent("launchpad:ready", { detail: user })); };
       script.onerror = () => { showScreen(); alert("The app couldn't load. Refresh the page and try again.", "error"); };
       document.body.append(script);
-    }
+    } else { loading.hidden = true; shell.hidden = false; mobileNav.hidden = false; }
   }
 
   function setMode(next) {
     mode = next;
+    const card = screen.querySelector(".auth-card");
+    card.classList.remove("auth-mode-change");
+    void card.offsetWidth;
+    card.classList.add("auth-mode-change");
     const signup = mode === "signup";
     document.getElementById("auth-title").innerHTML = signup
       ? `Make a little<br />room to <span class="name-highlight">grow.</span>`
@@ -206,9 +215,8 @@
     location.reload();
   });
 
-  showScreen();
   currentSession().then(user => {
     if (user) showApp(user);
     else showScreen();
-  });
+  }).catch(() => showScreen());
 })();
