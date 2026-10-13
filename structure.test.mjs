@@ -125,6 +125,7 @@ test("SAT practice offers a varied, original question set in both sections", () 
 });
 
 test("opportunity detail, quick quiz, and SAT scoring controls have observable outcomes", () => {
+  assert.match(app, /document\.addEventListener\("click",e=>\{const detail=e\.target\.closest\("\[data-detail\]"\)[\s\S]*\},true\)/, "dynamic study and opportunity actions must be bound in capture phase");
   assert.match(app, /function showDetail\(id\)[\s\S]*\$\("#detail-modal"\)\.showModal\(\)/);
   assert.match(app, /if\(detail\)\{showDetail\(detail\.dataset\.detail\);return\}/);
   assert.match(app, /if\(e\.target\.closest\("#check-study-answer"\)\)[\s\S]*feedback\.textContent=.*That's it/);
