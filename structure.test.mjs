@@ -65,6 +65,9 @@ test("opportunity filters cover all target categories and the SAT section states
 
 test("Vercel and local server security headers allow only the auth provider connection needed", async () => {
   const vercel = JSON.parse(await readFile(new URL("./vercel.json", import.meta.url), "utf8"));
+  assert.equal(vercel.framework, null, "static app must not use Vercel's auto-detected Node preset");
+  assert.equal(vercel.buildCommand, null, "static app must skip the inferred function build");
+  assert.equal(vercel.outputDirectory, ".", "serve the site files from the project root");
   const headers = vercel.headers[0].headers;
   assert.ok(headers.some(header => header.key === "X-Content-Type-Options" && header.value === "nosniff"));
   const csp = headers.find(header => header.key === "Content-Security-Policy")?.value || "";
