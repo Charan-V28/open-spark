@@ -145,6 +145,7 @@ test("Vercel and local server security headers allow only the auth provider conn
   assert.equal(vercel.outputDirectory, ".", "serve the site files from the project root");
   const headers = vercel.headers[0].headers;
   assert.ok(headers.some(header => header.key === "X-Content-Type-Options" && header.value === "nosniff"));
+  assert.ok(headers.some(header => header.key === "Cache-Control" && header.value === "no-cache, must-revalidate"), "static app changes should be revalidated after deployment");
   const csp = headers.find(header => header.key === "Content-Security-Policy")?.value || "";
   assert.match(csp, /connect-src 'self' https:\/\/\*\.supabase\.co/);
   assert.match(csp, /frame-ancestors 'none'/);
