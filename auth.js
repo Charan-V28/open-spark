@@ -51,7 +51,6 @@
   }
 
   function setMode(next) {
-    if (next === "signup" && !signupEnabled) return;
     mode = next;
     const signup = mode === "signup";
     document.getElementById("auth-title").innerHTML = signup
@@ -59,7 +58,7 @@
       : `Your next move<br />starts <span class="name-highlight">here.</span>`;
     document.getElementById("auth-lead").textContent = signup
       ? "Create a free account to save ideas and keep your progress together."
-      : (signupEnabled ? "Sign in to pick up where you left off, or make a free account to get started." : "Sign in to pick up where you left off.");
+      : "Sign in to pick up where you left off, or make a free account to get started.";
     document.getElementById("auth-switch-copy").textContent = signup ? "Already have an account?" : "New around here?";
     toggle.textContent = signup ? "Sign in" : "Create an account";
     submit.innerHTML = signup ? "Create my account <span>→</span>" : "Sign in <span>→</span>";
@@ -138,7 +137,9 @@
     event.preventDefault();
     alert("");
     if (!configured) {
-      alert("Account sign-in isn't connected yet. Add your Supabase project URL and publishable key to auth-config.js, then try again.", "error");
+      alert(mode === "signup"
+        ? "Account creation is not connected yet. A Supabase project URL and publishable key are required before accounts can be created."
+        : "Account sign-in is not connected yet. A Supabase project URL and publishable key are required before you can sign in.", "error");
       return;
     }
     if (mode === "signup" && !signupEnabled) {
@@ -183,12 +184,9 @@
   });
 
   localPreview.hidden = !(config.allowLocalPreview && localHost);
-  toggle.hidden = !signupEnabled;
-  document.querySelector(".auth-switch").hidden = !signupEnabled;
   if (!configured) {
-    alert("Account provider not connected yet. You can preview locally; production stays locked until Supabase is configured.", "info");
+    alert("Account provider is not connected yet. Create account and sign in will work after Supabase is configured. You can preview locally for now.", "info");
     document.getElementById("auth-title").textContent = "A good place to begin.";
-    submit.disabled = true;
   }
   localPreview.addEventListener("click", () => {
     sessionStorage.setItem("launchpad:local-preview", "true");

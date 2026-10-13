@@ -22,7 +22,10 @@ test("local preview is limited to local browser origins and the configuration co
   assert.match(authConfig, /supabaseUrl: ""/);
   assert.match(authConfig, /supabasePublishableKey: ""/);
   assert.match(authConfig, /enableAccountCreation: false/);
-  assert.match(auth, /toggle\.hidden = !signupEnabled/);
+  assert.match(html, /id="auth-mode-toggle" type="button">Create an account/);
+  assert.match(auth, /toggle\.addEventListener\("click", \(\) => setMode\(mode === "signin" \? "signup" : "signin"\)\)/);
+  assert.match(auth, /Account creation is not connected yet/);
+  assert.doesNotMatch(auth, /if \(next === "signup" && !signupEnabled\) return/);
   assert.match(authConfig, /supabaseUrl: ""/);
   assert.match(authConfig, /supabasePublishableKey: ""/);
   assert.doesNotMatch(authConfig, /supabase(?:Url|PublishableKey):\s*"https?:/i);

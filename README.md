@@ -26,7 +26,7 @@ npm test
 - Local-only `.txt` notes preview and sentence-based flashcard/quiz demo. Files are read in the browser and never uploaded.
 - Original SAT-aligned example questions, skill filtering, explanations, and direct links to official College Board and Khan Academy resources.
 - Local browser save controls and a clear-local-data action.
-- Sign-up/sign-in screen backed by Supabase Auth's public auth endpoints when configured; email confirmation should be enabled in the Supabase project.
+- Visible create-account/sign-in switch backed by Supabase Auth's public auth endpoints when configured; email confirmation should be enabled in the Supabase project. The create-account form remains visible while auth is unconfigured and explains what setup is missing.
 - Locally scoped saved state, account settings, sign-out, and preview legal notices.
 - Vercel static deployment configuration and security headers.
 - Live discovery links that open Indeed, LinkedIn, VolunteerMatch, and AmeriCorps at the source.
@@ -50,7 +50,7 @@ The app does not scrape or copy either service. Indeed's documented APIs are par
 - Opportunity cards are discovery starting points, not a verified, exhaustive, or live directory. Recheck eligibility, deadlines, costs, and availability with the linked provider.
 - Study generation is deterministic demo behavior, not AI. Only `.txt` files up to 1 MB are supported; extracted notes are limited to 5,000 characters.
 - There is no database, backend upload, admin console, live moderation, or production deletion/export workflow. Saved state uses this browser's `localStorage`; clear it on shared devices.
-- Supabase authentication must be configured before real sign-up/sign-in works. The local preview identity is not a real account and only appears on localhost or `file://`.
+- Supabase authentication must be configured before real sign-up/sign-in works; account creation additionally stays disabled until `enableAccountCreation` is set to `true` after the privacy/terms review and age/consent decisions. The visible create-account form is not a substitute for that service configuration. The local preview identity is not a real account and only appears on localhost or `file://`.
 - Although Supabase accounts can be real when configured, saved opportunities and progress are not synced to a server, account deletion is not implemented, and the browser-only gate is not server-side authorization.
 - The app is not affiliated with College Board. Its SAT practice items are original examples and are not official SAT questions.
 - Before real student accounts, document uploads, or school use, complete the legal, privacy, security, content-review, and operational work described in the product plan.
