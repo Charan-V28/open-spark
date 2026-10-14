@@ -4,7 +4,7 @@ A dependency-free web prototype for Open Spark, a student opportunity and study 
 
 ## Run locally
 
-Requires Node.js 20 or newer. No package install is needed.
+Requires Node.js 20 or newer. No package installation is needed.
 
 ```powershell
 npm start
@@ -22,7 +22,7 @@ npm test
 
 - Responsive home screen with low-pressure private missions and path cards.
 - Searchable category filters, beginner toggle, opportunity discovery links, detail panels, and save/status tracking.
-- Twenty curated opportunity and source starting points, with high-school-only filtering for internship listings, randomized ordering, and a refresh button. The cards link to providers; these are not live job listings and random ordering does not create new offers.
+- Twenty curated opportunity and source starting points, with high-school-only filtering for internship listings, randomized ordering, and a refresh button. The cards link to providers; these are not live job listings, and random ordering does not create new offers.
 - Eight beginner project guides with steps and safety notes, plus a separate independent-research area with eight ethical, beginner-friendly research plans.
 - A certificates and badges directory that distinguishes issuer-awarded learning badges from paid industry exams.
 - Local file extraction for selectable text in PDF, DOCX, PPTX, XLSX, EPUB, ODT, RTF, and common text/code formats, plus term/definition-aware flashcards and quizzes when the source has that structure. PDF text is extracted locally with vendored Mozilla PDF.js (Apache-2.0); Office and other document files are also processed in-browser and never uploaded. A study set uses up to 5,000 extracted characters. Scanned PDFs, images/OCR, legacy binary Office files, encrypted files, and malformed documents may not extract.
@@ -40,11 +40,11 @@ npm test
 1. The supplied Supabase project URL and publishable key are in `auth-config.js`. They are public browser settings; **never put a Supabase secret/service-role key in this file or in the browser**.
 2. Supabase's public Auth settings currently report email/password enabled, sign-ups allowed, and email confirmation required.
 3. In Supabase Auth > URL Configuration, set the Site URL to `https://launchpad-site-rho.vercel.app` and allow these redirect patterns: `http://localhost:4173/**`, `http://127.0.0.1:4173/**`, `https://launchpad-site-rho.vercel.app/**`, and Vercel previews `https://*-bcharanvan-4576s-projects.vercel.app/**`. Supabase rejects confirmation/reset redirects that are not on this list. The production alias currently retains its older `launchpad-site` name after the Vercel project was renamed to `open-spark`.
-4. `enableAccountCreation` is enabled for the Vercel-protected test deployment so a test user can register, confirm email, then sign in. The browser flow returns newly registered users to sign-in instead of silently signing them in.
+4. `enableAccountCreation` is enabled for the Vercel-protected test deployment so a test user can register, confirm email, then sign in. The browser flow returns newly registered users to sign in instead of silently signing them in.
 5. `allowLocalPreview: true` is only for local development; its bypass button is hidden on Vercel/non-local hosts.
 6. Before making the site public to students, replace the draft Terms and Privacy Notice with reviewed documents, finish age/guardian and support decisions, and implement account deletion and server-side authorization/data policies.
 
-The current account gate is client-side and the app data is still local to each browser. Supabase handles credentials; Open Spark never stores passwords. This is a working sign-in prototype, not a security boundary for private server data. Do not add private cloud data or uploads until server-side session verification and per-user Row Level Security (RLS) are implemented and tested.
+The current account gate is client-side, and the app data is still local to each browser. Supabase handles credentials; Open Spark never stores passwords. This is a working sign-in prototype, not a security boundary for private server data. Do not add private cloud data or uploads until server-side session verification and per-user Row Level Security (RLS) are implemented and tested.
 
 See [SECURITY.md](./SECURITY.md) for the current security review, implemented response protections, and requirements before real student accounts or private cloud data.
 
@@ -73,7 +73,7 @@ Set this folder (`outputs/launchpad-site`) as the Vercel project root and deploy
 
 ## Automated opportunity updates
 
-The current cards are a locally curated source directory. The page can shuffle them, but it does not fetch new openings or remove expired deadlines. A reliable automated feed needs a server-side scheduled job, licensed/official source connectors, a database, review rules, and expiry handling. Google Custom Search JSON API is closed to new customers and Google says it will be discontinued on January 1, 2027; it is not a good new integration to build around. A Google API key alone would return search results, not verified high-school internship records. Do not paste a key into chat or browser code. If a future connector needs a secret, store it in local `.env` for local development and Vercel Environment Variables for deployment; keep it server-only and out of `NEXT_PUBLIC_*` variables and Git.
+The current cards are a locally curated source directory. The page can shuffle them, but it does not fetch new openings or remove expired deadlines. A reliable automated feed needs a server-side scheduled job, licensed/official source connectors, a database, review rules, and expiry handling. Google Custom Search JSON API is closed to new customers, and Google says it will be discontinued on January 1, 2027; it is not a good new integration to build around. A Google API key alone would return search results, not verified high-school internship records. Do not paste a key into chat or browser code. If a future connector needs a secret, store it in a local `.env` for local development and Vercel Environment Variables for deployment; keep it server-only and out of `NEXT_PUBLIC_*` variables and Git.
 
 For high-school-only internships, ingest explicit education-level and grade/age eligibility from each provider, preserve the provider URL and checked date, and exclude records unless the high-school rule is verified. A text classifier can assist staff but must not decide eligibility by itself. The scheduled job should mark a listing expired when its deadline passes, hide records with unknown/stale status from “open now,” and keep historical records for audit. Do not scrape LinkedIn or Indeed; use only their approved partner APIs or licensed feeds. See the product plan for a proposed ingestion schema and Vercel/Supabase architecture.
 
